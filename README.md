@@ -45,20 +45,15 @@ npx expo install sonny-ui
 
 ### Backend Setup (Optional)
 
-Automatically configure Firebase and/or Supabase:
+**Important**: Backend setup is done using the CLI tool after installation, not during `npm install`.
+
+First install the library:
 
 ```bash
-# Firebase setup
-npm install sonny-ui -f
-
-# Supabase setup
-npm install sonny-ui -s
-
-# Both backends
-npm install sonny-ui -f -s
+npm install sonny-ui
 ```
 
-Or use the CLI after installation:
+Then configure your backend(s) using the CLI:
 
 ```bash
 # Firebase setup
@@ -71,13 +66,23 @@ npx sonny-ui setup --supabase
 npx sonny-ui setup -f -s
 ```
 
+This will:
+
+- Install the necessary backend dependencies
+- Create configuration files in your `config/` directory
+- Generate `.env.example` files with the required environment variables
+
+> **Note**: The backend configurations are optional and separate from the UI components. You can use sonny-ui components without any backend setup.
+
 ## Quick Start
 
 ```tsx
 import React from "react";
-import { View, Text } from "react-native";
+import { View, StyleSheet } from "react-native";
 import {
   MainContainer,
+  SonnyButton,
+  SonnyInput,
   SonnyModal,
   showToast,
   SonnyToastProvider,
@@ -85,6 +90,7 @@ import {
 
 export default function App() {
   const [modalVisible, setModalVisible] = React.useState(false);
+  const [name, setName] = React.useState("");
 
   const handleShowToast = () => {
     showToast({
@@ -97,30 +103,83 @@ export default function App() {
 
   return (
     <SonnyToastProvider>
-      <MainContainer>
-        <Text onPress={() => setModalVisible(true)}>Open Modal</Text>
+      <MainContainer style={styles.container}>
+        <SonnyInput
+          placeholder="Enter your name"
+          value={name}
+          onChangeText={setName}
+          leftIcon="person"
+          style={styles.input}
+        />
+
+        <SonnyButton
+          title="Open Modal"
+          onPress={() => setModalVisible(true)}
+          variant="primary"
+          icon="modal"
+          style={styles.button}
+        />
 
         <SonnyModal
           visible={modalVisible}
           onClose={() => setModalVisible(false)}
           showCloseButton
         >
-          <Text>Hello from sonny-ui!</Text>
-          <Text onPress={handleShowToast}>Show Toast</Text>
+          <SonnyButton
+            title="Show Toast"
+            onPress={handleShowToast}
+            variant="success"
+            icon="checkmark-circle"
+          />
         </SonnyModal>
       </MainContainer>
     </SonnyToastProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 20,
+  },
+  input: {
+    marginBottom: 20,
+  },
+  button: {
+    marginBottom: 10,
+  },
+});
 ```
 
 ## What's Included
 
-- **UI Components** - Modals, toasts, cached images, country pickers, and more
-- **Layout Components** - Safe area containers with scroll management
-- **Utilities** - String formatters, validation helpers, and data manipulation
-- **Hooks** - Image caching, performance optimization utilities
-- **Backend Integration** - Automated Firebase and Supabase setup
+### 🎨 UI Components
+
+- **[SonnyButton](./docs/SonnyButton.md)** - Customizable button with 7 variants, loading states, and icon support
+- **[SonnyInput](./docs/SonnyInput.md)** - Advanced text input with validation, icons, and error states
+- **[SonnyBackButton](./docs/SonnyBackButton.md)** - Navigation back button with multiple styles and positioning
+- **[SonnySwitch](./docs/SonnySwitch.md)** - Toggle switch with 6 variants and smooth animations
+- **[SonnyModal](./docs/SonnyModal.md)** - Customizable modal with gradient background and animations
+- **[SonnySheetModal](./docs/SonnySheetModal.md)** - Bottom sheet modal with drag gestures
+- **[SonnyToast](./docs/SonnyToast.md)** - Toast notifications with multiple types and positioning
+- **[SonnyCountriesSearch](./docs/SonnyCountriesSearch.md)** - Searchable country dropdown with flags
+- **[SonnyCountryCodePicker](./docs/SonnyCountryCodePicker.md)** - Modal country code picker
+- **[CachedImage](./docs/CachedImage.md)** - High-performance image caching component
+- **[Text](./docs/Text.md)** - Enhanced text component with utility features
+
+### 🏗️ Layout Components
+
+- **[MainContainer](./docs/MainContainer.md)** - Safe area container with scroll management
+
+### 🛠️ Utilities & Hooks
+
+- **[String Utils](./docs/StringUtils.md)** - Comprehensive text formatting and validation functions
+- **[Image Cache Hook](./docs/CachedImage.md#cache-management)** - Efficient image caching system
+- **[Toast Provider](./docs/SonnyToast.md#setup)** - Global toast notification management
+
+### ⚙️ Backend Integration
+
+- **Firebase Setup** - Automated Firebase configuration with auth, firestore, and storage
+- **Supabase Setup** - Automated Supabase configuration with auth and database
 
 ## Documentation
 
