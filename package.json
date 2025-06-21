@@ -1,6 +1,6 @@
 {
   "name": "sonny-ui",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A collection of reusable React Native components optimized for Expo",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -29,6 +29,11 @@
     "bottom-sheet",
     "toast",
     "cached-image",
+    "input",
+    "button",
+    "back-button",
+    "switch",
+    "toggle",
     "string-utils",
     "formatters",
     "utilities"

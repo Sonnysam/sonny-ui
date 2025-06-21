@@ -4,4 +4,8 @@ export { MainContainerExample } from "./MainContainerExample";
 export { ToastExample } from "./ToastExample";
 export { CachedImageExample } from "./CachedImageExample";
 export { CountriesExample } from "./CountriesExample";
+export { SonnyInputExample } from "./SonnyInputExample";
+export { SonnyButtonExample } from "./SonnyButtonExample";
+export { SonnyBackButtonExample } from "./SonnyBackButtonExample";
+export { SonnySwitchExample } from "./SonnySwitchExample";
 export { StringUtilsExample } from "./StringUtilsExample";

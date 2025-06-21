@@ -4,12 +4,9 @@ We're continuously expanding sonny-ui. Here are some components and utilities we
 
 ## 🎨 Planned UI Components
 
-- **SonnyButton** - Customizable button with loading states and variants
-- **SonnyInput** - Enhanced text input with validation and formatting
 - **SonnyCard** - Flexible card component with shadows and borders
 - **SonnyAvatar** - User avatar with fallback initials and online status
 - **SonnyBadge** - Notification badges and status indicators
-- **SonnySwitch** - Animated toggle switches with custom styling
 - **SonnySlider** - Range sliders with custom tracks and thumbs
 - **SonnyProgressBar** - Progress indicators with animations
 - **SonnySkeleton** - Loading skeleton screens
@@ -53,38 +50,6 @@ We're continuously expanding sonny-ui. Here are some components and utilities we
 - **React Native macOS** - macOS platform support
 - **Expo Router Integration** - Deep integration with Expo Router
 - **Next.js Compatibility** - Web-first component variants
-
-## 📅 Release Timeline
-
-### Q1 2024
-
-- SonnyButton
-- SonnyInput
-- SonnyCard
-- Theme System (Phase 1)
-
-### Q2 2024
-
-- SonnyAvatar
-- SonnyBadge
-- SonnySwitch
-- Form Validation Utils
-
-### Q3 2024
-
-- SonnySlider
-- SonnyProgressBar
-- SonnySkeleton
-- Animation Utils
-
-### Q4 2024
-
-- SonnyBottomSheet
-- SonnyActionSheet
-- Performance Utils
-- Testing Utilities
-
----
 
 **Want to suggest a component or utility?** [Open an issue](https://github.com/sonnysam/sonny-ui/issues) or start a [discussion](https://github.com/sonnysam/sonny-ui/discussions)!
 
