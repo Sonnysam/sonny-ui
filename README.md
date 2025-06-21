@@ -136,4 +136,4 @@ MIT © [sonnysam](https://github.com/sonnysam)
 
 **Want to suggest a component or utility?** [Open an issue](https://github.com/sonnysam/sonny-ui/issues) or start a [discussion](https://github.com/sonnysam/sonny-ui/discussions)!
 
-Made with ❤️ in Ghana 🇬🇭 by Samuel Agbenyo (@AgbenyoOfficial on X)
+Made with ❤️ in Ghana 🇬🇭 by Samuel Agbenyo ([@AgbenyoOfficial](https://x.com/AgbenyoOfficial) on X)
