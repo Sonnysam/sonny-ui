@@ -1,7 +1,3 @@
-// This is the main entry point for the sonny-ui library.
-// Components will be exported here as they are implemented.
-
-// Components
 export { SonnyModal } from "./components/ui/SonnyModal";
 export { SonnySheetModal } from "./components/ui/SonnySheetModal";
 export { Text } from "./components/ui/Text";
@@ -10,16 +6,12 @@ export { CachedImage } from "./components/ui/CachedImage";
 export { SonnyCountriesSearch } from "./components/ui/SonnyCountriesSearch";
 export { SonnyCountryCodePicker } from "./components/ui/SonnyCountryCodePicker";
 
-// Layouts
 export { MainContainer } from "./layouts/MainContainer";
 
-// Hooks
 export { useImageCache, clearImageCache } from "./hooks/useImageCache";
 
-// Utils
 export * from "./utils";
 
-// Data
 export {
   countries,
   findCountryByName,
@@ -27,7 +19,6 @@ export {
   searchCountries,
 } from "./data/countries";
 
-// Types
 export type { SonnyModalProps } from "./components/ui/SonnyModal";
 export type { SonnySheetModalProps } from "./components/ui/SonnySheetModal";
 export type { TextProps } from "./components/ui/Text";
