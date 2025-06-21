@@ -20,7 +20,7 @@ Thank you for your interest in contributing to sonny-ui! This guide will help yo
 2. **Clone your fork**
 
    ```bash
-   git clone https://github.com/your-username/sonny-ui.git
+   git clone https://github.com/Sonnysam/sonny-ui
    cd sonny-ui
    ```
 

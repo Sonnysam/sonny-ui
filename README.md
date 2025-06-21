@@ -161,7 +161,7 @@ We welcome contributions! Here's how you can help:
 1. **Fork and clone the repository**
 
    ```bash
-   git clone https://github.com/your-username/sonny-ui.git
+   git clone https://github.com/Sonnysam/sonny-ui
    cd sonny-ui
    ```
 
