@@ -1,6 +1,7 @@
 # sonny-ui
 
 [![npm version](https://badge.fury.io/js/sonny-ui.svg)](https://badge.fury.io/js/sonny-ui)
+[![npm package](https://img.shields.io/npm/v/sonny-ui.svg)](https://www.npmjs.com/package/sonny-ui)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A modern collection of reusable React Native components and utilities optimized for Expo SDK 50+.
@@ -23,8 +24,23 @@ A modern collection of reusable React Native components and utilities optimized 
 
 ## Installation
 
+Choose your preferred package manager:
+
 ```bash
+# npm
 npm install sonny-ui
+
+# yarn
+yarn add sonny-ui
+
+# pnpm
+pnpm add sonny-ui
+
+# bun
+bun add sonny-ui
+
+# expo
+npx expo install sonny-ui
 ```
 
 ### Backend Setup (Optional)
@@ -126,7 +142,80 @@ export default function App() {
 
 ## Contributing
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+We welcome contributions! Here's how you can help:
+
+### 🐛 **Report Issues**
+
+- Found a bug? [Open an issue](https://github.com/sonnysam/sonny-ui/issues)
+- Include steps to reproduce, expected vs actual behavior
+- Add screenshots or code snippets when helpful
+
+### 💡 **Suggest Features**
+
+- Have an idea? [Start a discussion](https://github.com/sonnysam/sonny-ui/discussions)
+- Check our [Roadmap](./docs/ROADMAP.md) first
+- Explain your use case and why it would benefit others
+
+### 🔧 **Development Setup**
+
+1. **Fork and clone the repository**
+
+   ```bash
+   git clone https://github.com/your-username/sonny-ui.git
+   cd sonny-ui
+   ```
+
+2. **Install dependencies**
+
+   ```bash
+   npm install
+   ```
+
+3. **Build the project**
+
+   ```bash
+   npm run build
+   ```
+
+4. **Test your changes**
+   ```bash
+   npm test
+   ```
+
+### 📝 **Pull Request Guidelines**
+
+- **Fork** the repository and create your branch from `main`
+- **Follow** the existing code style and conventions
+- **Add tests** for new features or bug fixes
+- **Update documentation** if you change APIs
+- **Write clear commit messages** following conventional commits
+- **Keep PRs focused** - one feature/fix per PR
+
+### 🎯 **What We're Looking For**
+
+- **Bug fixes** and performance improvements
+- **New components** from our [roadmap](./docs/ROADMAP.md)
+- **Documentation** improvements and examples
+- **Tests** to improve coverage
+- **Accessibility** enhancements
+
+### 📋 **Code Style**
+
+- Use **TypeScript** for all new code
+- Follow **React Native** best practices
+- Add **JSDoc comments** for public APIs
+- Use **meaningful variable names**
+- Keep components **focused and reusable**
+
+### 🏆 **Recognition**
+
+Contributors will be:
+
+- Added to our contributors list
+- Credited in release notes
+- Given collaborator access after consistent contributions
+
+For detailed guidelines, see our [Contributing Guide](CONTRIBUTING.md).
 
 ## License
 
