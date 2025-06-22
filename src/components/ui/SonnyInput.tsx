@@ -153,7 +153,7 @@ export const SonnyInput: React.FC<SonnyInputProps> = ({
             return errorBorderColor || Colors.error;
         }
         if (isFocused) {
-            return focusedBorderColor || Colors.info;
+            return focusedBorderColor || Colors.black;
         }
         return borderColor || '#dee2e6';
     };
@@ -196,7 +196,7 @@ export const SonnyInput: React.FC<SonnyInputProps> = ({
                         <Ionicons
                             name={leftIcon}
                             size={iconSize}
-                            color={leftIconColor || Colors.grey}
+                            color={leftIconColor || (isFocused ? Colors.black : Colors.grey)}
                         />
                     </View>
                 )}
@@ -244,7 +244,7 @@ export const SonnyInput: React.FC<SonnyInputProps> = ({
                             size={iconSize}
                             color={
                                 isPassword
-                                    ? (isFocused ? Colors.info : Colors.grey)
+                                    ? (isFocused ? Colors.black : Colors.grey)
                                     : (rightIconColor || Colors.grey)
                             }
                         />
