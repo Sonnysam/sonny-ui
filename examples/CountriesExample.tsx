@@ -1,24 +1,29 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, Alert } from 'react-native';
 import { Text, MainContainer, SonnyCountriesSearch, SonnyCountryCodePicker } from '../src';
 import { Country } from '../src/data/countries';
 import { Colors } from '../src/constants/colors';
 
 export const CountriesExample = () => {
-    const [selectedSearchCountry, setSelectedSearchCountry] = useState<Country | null>(null);
-    const [selectedPickerCountry, setSelectedPickerCountry] = useState<Country | null>(null);
-    const [searchHistory, setSearchHistory] = useState<Country[]>([]);
+    const [selectedCountry1, setSelectedCountry1] = useState<Country | null>(null);
+    const [selectedCountry2, setSelectedCountry2] = useState<Country | null>(null);
+    const [searchValue, setSearchValue] = useState('');
 
-    const handleSearchCountrySelect = (country: Country) => {
-        setSelectedSearchCountry(country);
-        // Add to history if not already present
-        if (!searchHistory.find(c => c.code === country.code)) {
-            setSearchHistory(prev => [country, ...prev.slice(0, 4)]); // Keep last 5
-        }
+    const handleCountrySelect1 = (country: Country) => {
+        console.log('Country selected 1:', country);
+        setSelectedCountry1(country);
+        Alert.alert('Country Selected', `You selected: ${country.name} (${country.code})`);
     };
 
-    const handlePickerCountrySelect = (country: Country) => {
-        setSelectedPickerCountry(country);
+    const handleCountrySelect2 = (country: Country) => {
+        console.log('Country selected 2:', country);
+        setSelectedCountry2(country);
+        Alert.alert('Country Selected', `You selected: ${country.name} (${country.dialCode})`);
+    };
+
+    const handleSearchSelect = (country: Country) => {
+        console.log('Search country selected:', country);
+        Alert.alert('Search Selection', `You selected: ${country.name}`);
     };
 
     return (
@@ -40,52 +45,43 @@ export const CountriesExample = () => {
                         <View style={styles.exampleContainer}>
                             <Text style={styles.exampleLabel}>Basic Search</Text>
                             <SonnyCountriesSearch
-                                onCountrySelect={handleSearchCountrySelect}
+                                onCountrySelect={handleSearchSelect}
                                 placeholder="Search countries..."
                                 showFlags
-                                maxResults={8}
+                                showDialCodes
+                                maxResults={10}
                             />
                         </View>
 
                         <View style={styles.exampleContainer}>
                             <Text style={styles.exampleLabel}>With Country Codes & Dial Codes</Text>
                             <SonnyCountriesSearch
-                                onCountrySelect={handleSearchCountrySelect}
-                                placeholder="Search by name, code, or dial code..."
+                                onCountrySelect={handleSearchSelect}
+                                placeholder="Search with codes..."
                                 showFlags
                                 showCodes
-                                showDialCodes
-                                maxResults={6}
-                                clearOnSelect
+                                maxResults={8}
                             />
                         </View>
 
                         <View style={styles.exampleContainer}>
                             <Text style={styles.exampleLabel}>Custom Styled</Text>
                             <SonnyCountriesSearch
-                                onCountrySelect={handleSearchCountrySelect}
-                                placeholder="Custom styled search..."
-                                showFlags={false}
+                                onCountrySelect={handleSearchSelect}
+                                value={searchValue}
+                                onSearchChange={setSearchValue}
+                                placeholder="Controlled search..."
+                                showFlags
+                                showDialCodes
                                 showCodes
                                 maxResults={5}
-                                inputStyle={styles.customInput}
-                                listStyle={styles.customList}
-                                itemStyle={styles.customItem}
                             />
                         </View>
 
-                        {selectedSearchCountry && (
+                        {searchValue.length > 0 && (
                             <View style={styles.resultContainer}>
-                                <Text style={styles.resultTitle}>Selected Country:</Text>
-                                <View style={styles.countryDisplay}>
-                                    <Text style={styles.flagLarge}>{selectedSearchCountry.flag}</Text>
-                                    <View style={styles.countryInfo}>
-                                        <Text style={styles.countryName}>{selectedSearchCountry.name}</Text>
-                                        <Text style={styles.countryDetails}>
-                                            {selectedSearchCountry.code} • {selectedSearchCountry.dialCode}
-                                        </Text>
-                                    </View>
-                                </View>
+                                <Text style={styles.resultTitle}>Current Search:</Text>
+                                <Text style={styles.searchInfo}>"{searchValue}"</Text>
                             </View>
                         )}
                     </View>
@@ -100,29 +96,29 @@ export const CountriesExample = () => {
                         <View style={styles.exampleContainer}>
                             <Text style={styles.exampleLabel}>Basic Picker</Text>
                             <SonnyCountryCodePicker
-                                onCountrySelect={handlePickerCountrySelect}
-                                selectedCountryCode={selectedPickerCountry?.code}
-                                placeholder="Select country code"
+                                onCountrySelect={handleCountrySelect1}
+                                selectedCountry={selectedCountry1 || undefined}
+                                showFlag
+                                placeholder="Select country"
                             />
                         </View>
 
                         <View style={styles.exampleContainer}>
                             <Text style={styles.exampleLabel}>With Country Name</Text>
                             <SonnyCountryCodePicker
-                                onCountrySelect={handlePickerCountrySelect}
-                                selectedCountryCode={selectedPickerCountry?.code}
-                                showCountryName
+                                onCountrySelect={handleCountrySelect2}
+                                selectedCountry={selectedCountry2 || undefined}
                                 showFlag
-                                placeholder="Select country"
-                                maxCountryNameWidth={100}
+                                showCountryName
+                                placeholder="Select country with name"
                             />
                         </View>
 
                         <View style={styles.exampleContainer}>
                             <Text style={styles.exampleLabel}>Custom Styled</Text>
                             <SonnyCountryCodePicker
-                                onCountrySelect={handlePickerCountrySelect}
-                                selectedCountryCode={selectedPickerCountry?.code}
+                                onCountrySelect={handleCountrySelect1}
+                                selectedCountry={selectedCountry1 || undefined}
                                 showCountryName
                                 buttonStyle={styles.customButton}
                                 buttonTextStyle={styles.customButtonText}
@@ -141,37 +137,36 @@ export const CountriesExample = () => {
                             />
                         </View>
 
-                        {selectedPickerCountry && (
+                        {selectedCountry1 && (
                             <View style={styles.resultContainer}>
-                                <Text style={styles.resultTitle}>Selected Country Code:</Text>
+                                <Text style={styles.resultTitle}>Selected Country:</Text>
                                 <View style={styles.countryDisplay}>
-                                    <Text style={styles.flagLarge}>{selectedPickerCountry.flag}</Text>
+                                    <Text style={styles.flagLarge}>{selectedCountry1.flag}</Text>
                                     <View style={styles.countryInfo}>
-                                        <Text style={styles.countryName}>{selectedPickerCountry.name}</Text>
+                                        <Text style={styles.countryName}>{selectedCountry1.name}</Text>
                                         <Text style={styles.countryDetails}>
-                                            {selectedPickerCountry.code} • {selectedPickerCountry.dialCode}
+                                            {selectedCountry1.code} • {selectedCountry1.dialCode}
+                                        </Text>
+                                    </View>
+                                </View>
+                            </View>
+                        )}
+
+                        {selectedCountry2 && (
+                            <View style={styles.resultContainer}>
+                                <Text style={styles.resultTitle}>Selected Country:</Text>
+                                <View style={styles.countryDisplay}>
+                                    <Text style={styles.flagLarge}>{selectedCountry2.flag}</Text>
+                                    <View style={styles.countryInfo}>
+                                        <Text style={styles.countryName}>{selectedCountry2.name}</Text>
+                                        <Text style={styles.countryDetails}>
+                                            {selectedCountry2.code} • {selectedCountry2.dialCode}
                                         </Text>
                                     </View>
                                 </View>
                             </View>
                         )}
                     </View>
-
-                    {/* Search History */}
-                    {searchHistory.length > 0 && (
-                        <View style={styles.section}>
-                            <Text style={styles.sectionTitle}>Recent Searches</Text>
-                            <View style={styles.historyContainer}>
-                                {searchHistory.map((country, index) => (
-                                    <View key={country.code} style={styles.historyItem}>
-                                        <Text style={styles.historyFlag}>{country.flag}</Text>
-                                        <Text style={styles.historyName}>{country.name}</Text>
-                                        <Text style={styles.historyCode}>{country.code}</Text>
-                                    </View>
-                                ))}
-                            </View>
-                        </View>
-                    )}
 
                     {/* Usage Examples */}
                     <View style={styles.section}>
@@ -321,32 +316,9 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: Colors.grey,
     },
-    historyContainer: {
-        gap: 8,
-    },
-    historyItem: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: Colors.white,
-        padding: 12,
-        borderRadius: 6,
-        borderWidth: 1,
-        borderColor: '#e9ecef',
-    },
-    historyFlag: {
-        fontSize: 16,
-        marginRight: 12,
-    },
-    historyName: {
-        flex: 1,
-        fontSize: 14,
-        color: Colors.black,
-        fontWeight: '500',
-    },
-    historyCode: {
-        fontSize: 12,
-        color: Colors.grey,
-        fontWeight: '500',
+    searchInfo: {
+        marginTop: 8,
+        fontStyle: 'italic',
     },
     useCaseContainer: {
         gap: 16,

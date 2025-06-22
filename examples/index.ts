@@ -9,3 +9,4 @@ export { SonnyButtonExample } from "./SonnyButtonExample";
 export { SonnyBackButtonExample } from "./SonnyBackButtonExample";
 export { SonnySwitchExample } from "./SonnySwitchExample";
 export { StringUtilsExample } from "./StringUtilsExample";
+export { TextExample } from "./TextExample";

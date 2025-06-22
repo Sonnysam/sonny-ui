@@ -84,6 +84,12 @@ export const SonnyCountriesSearch: React.FC<SonnyCountriesSearchProps> = ({
     const [filteredCountries, setFilteredCountries] = useState<Country[]>([]);
     const [showResults, setShowResults] = useState(false);
 
+    // Validate required props
+    if (!onCountrySelect || typeof onCountrySelect !== 'function') {
+        console.error('SonnyCountriesSearch: onCountrySelect prop is required and must be a function');
+        return null;
+    }
+
     // Use controlled value if provided, otherwise use internal state
     const searchText = value !== undefined ? value : internalSearchText;
     const isControlled = value !== undefined;
@@ -128,14 +134,38 @@ export const SonnyCountriesSearch: React.FC<SonnyCountriesSearchProps> = ({
                     <Text style={styles.flag}>{country.flag}</Text>
                 )}
                 <View style={styles.countryText}>
-                    <Text style={styles.countryName}>{country.name}</Text>
+                    <Text
+                        style={styles.countryName}
+                        fontFamily="inter"
+                        fontSize={16}
+                        fontWeight="500"
+                        color={Colors.black}
+                    >
+                        {country.name}
+                    </Text>
                     {(showCodes || showDialCodes) && (
                         <View style={styles.countryMeta}>
                             {showCodes && (
-                                <Text style={styles.countryCode}>{country.code}</Text>
+                                <Text
+                                    style={styles.countryCode}
+                                    fontFamily="inter"
+                                    fontSize={12}
+                                    fontWeight="500"
+                                    color={Colors.grey}
+                                >
+                                    {country.code}
+                                </Text>
                             )}
                             {showDialCodes && (
-                                <Text style={styles.dialCode}>{country.dialCode}</Text>
+                                <Text
+                                    style={styles.dialCode}
+                                    fontFamily="inter"
+                                    fontSize={12}
+                                    fontWeight="500"
+                                    color={Colors.info}
+                                >
+                                    {country.dialCode}
+                                </Text>
                             )}
                         </View>
                     )}
@@ -182,7 +212,14 @@ export const SonnyCountriesSearch: React.FC<SonnyCountriesSearchProps> = ({
 
             {showResults && searchText.trim() && filteredCountries.length === 0 && (
                 <View style={[styles.resultsContainer, styles.noResults, listStyle]}>
-                    <Text style={styles.noResultsText}>No countries found</Text>
+                    <Text
+                        style={styles.noResultsText}
+                        fontFamily="inter"
+                        fontSize={14}
+                        color={Colors.grey}
+                    >
+                        No countries found
+                    </Text>
                 </View>
             )}
         </View>
@@ -247,9 +284,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     countryName: {
-        fontSize: 16,
-        color: Colors.black,
-        fontWeight: '500',
+        // Font styles now handled by Text component props
     },
     countryMeta: {
         flexDirection: 'row',
@@ -257,22 +292,16 @@ const styles = StyleSheet.create({
         gap: 8,
     },
     countryCode: {
-        fontSize: 12,
-        color: Colors.grey,
-        fontWeight: '500',
+        // Font styles now handled by Text component props
     },
     dialCode: {
-        fontSize: 12,
-        color: Colors.info,
-        fontWeight: '500',
+        // Font styles now handled by Text component props
     },
     noResults: {
         padding: 16,
         alignItems: 'center',
     },
     noResultsText: {
-        color: Colors.grey,
-        fontSize: 14,
         fontStyle: 'italic',
     },
 });

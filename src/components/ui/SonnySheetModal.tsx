@@ -46,8 +46,8 @@ export interface SonnySheetModalProps {
      */
     contentContainerStyle?: ViewStyle;
     /**
-     * Custom minimum height for the modal
-     * @default 300
+     * Custom minimum height for the modal (in pixels)
+     * @default SCREEN_HEIGHT * 0.5 (50% of screen height)
      */
     minHeight?: number;
     /**
@@ -72,7 +72,7 @@ export const SonnySheetModal: React.FC<SonnySheetModalProps> = ({
     showCloseButton = true,
     gradientColors = ['#ffffff', '#f8f9fa'],
     contentContainerStyle,
-    minHeight = 300,
+    minHeight = SCREEN_HEIGHT * 0.5, // Default to 50% of screen height
     height,
     showDragHandle = true,
 }) => {
@@ -89,7 +89,8 @@ export const SonnySheetModal: React.FC<SonnySheetModalProps> = ({
                 }
             },
             onPanResponderRelease: (_, gestureState) => {
-                if (gestureState.dy > 100) {
+                // Dismiss if dragged down more than 150px or with sufficient velocity
+                if (gestureState.dy > 150 || gestureState.vy > 0.5) {
                     handleClose();
                 } else {
                     // Snap back to initial position

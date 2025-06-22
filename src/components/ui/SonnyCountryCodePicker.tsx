@@ -67,6 +67,12 @@ export const SonnyCountryCodePicker: React.FC<SonnyCountryCodePickerProps> = ({
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [internalSelectedCountry, setInternalSelectedCountry] = useState<Country | null>(null);
 
+    // Validate required props
+    if (!onCountrySelect || typeof onCountrySelect !== 'function') {
+        console.error('SonnyCountryCodePicker: onCountrySelect prop is required and must be a function');
+        return null;
+    }
+
     // Use provided selectedCountry prop or derive from selectedCountryCode
     const currentSelectedCountry = selectedCountry || internalSelectedCountry;
 
@@ -96,7 +102,12 @@ export const SonnyCountryCodePicker: React.FC<SonnyCountryCodePickerProps> = ({
     const renderButtonContent = () => {
         if (!currentSelectedCountry) {
             return (
-                <Text style={[styles.placeholderText, buttonTextStyle] as any}>
+                <Text
+                    style={buttonTextStyle}
+                    fontFamily="inter"
+                    fontSize={16}
+                    color={Colors.grey}
+                >
                     {placeholder}
                 </Text>
             );
@@ -107,23 +118,34 @@ export const SonnyCountryCodePicker: React.FC<SonnyCountryCodePickerProps> = ({
                 {showFlag && (
                     <Text style={styles.flagText}>{currentSelectedCountry.flag}</Text>
                 )}
-                <Text style={[styles.dialCodeText, buttonTextStyle] as any}>
+                <Text
+                    style={styles.dialCodeText}
+                    fontFamily="inter"
+                    fontSize={16}
+                    fontWeight="600"
+                    color={Colors.black}
+                >
                     {currentSelectedCountry.dialCode}
                 </Text>
                 {showCountryName && (
                     <Text
-                        style={[
-                            styles.countryNameText,
-                            buttonTextStyle,
-                            { maxWidth: maxCountryNameWidth }
-                        ] as any}
+                        style={[styles.countryNameText, { maxWidth: maxCountryNameWidth }] as any}
+                        fontFamily="inter"
+                        fontSize={14}
+                        color={Colors.grey}
                         numberOfLines={1}
                         ellipsizeMode="tail"
                     >
                         {currentSelectedCountry.name}
                     </Text>
                 )}
-                <Text style={[styles.chevron, buttonTextStyle] as any}>▼</Text>
+                <Text
+                    style={styles.chevron}
+                    fontSize={12}
+                    color={Colors.grey}
+                >
+                    ▼
+                </Text>
             </View>
         );
     };
@@ -150,7 +172,15 @@ export const SonnyCountryCodePicker: React.FC<SonnyCountryCodePickerProps> = ({
                 contentContainerStyle={modalStyle}
             >
                 <View style={styles.modalContent}>
-                    <Text style={styles.modalTitle}>Select Country</Text>
+                    <Text
+                        style={styles.modalTitle}
+                        fontFamily="poppins"
+                        fontSize={18}
+                        fontWeight="600"
+                        color={Colors.black}
+                    >
+                        Select Country
+                    </Text>
                     <SonnyCountriesSearch
                         onCountrySelect={handleCountrySelect}
                         placeholder="Search countries..."
@@ -191,25 +221,14 @@ const styles = StyleSheet.create({
         marginRight: 8,
     },
     dialCodeText: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: Colors.black,
         marginRight: 8,
     },
     countryNameText: {
-        fontSize: 14,
-        color: Colors.grey,
         flex: 1,
         marginRight: 8,
     },
     chevron: {
-        fontSize: 12,
-        color: Colors.grey,
         marginLeft: 'auto',
-    },
-    placeholderText: {
-        fontSize: 16,
-        color: Colors.grey,
     },
     modalContent: {
         padding: 16,
@@ -218,9 +237,6 @@ const styles = StyleSheet.create({
         marginBottom: 16,
     },
     modalTitle: {
-        fontSize: 18,
-        fontWeight: '600',
-        color: Colors.white,
         marginBottom: 16,
         textAlign: 'center',
     },

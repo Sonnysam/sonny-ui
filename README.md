@@ -61,6 +61,78 @@ npm install sonny-ui
 npm install react-native-safe-area-context
 ```
 
+### Google Fonts Setup (Optional)
+
+For the enhanced Text component with Google Fonts support (Poppins & Inter), install the required packages following the [Expo Google Fonts guide](https://github.com/expo/google-fonts):
+
+```bash
+npx expo install @expo-google-fonts/poppins @expo-google-fonts/inter expo-font expo-splash-screen
+```
+
+Then load the fonts in your root layout (`app/_layout.tsx` or `App.tsx`):
+
+```tsx
+import React from 'react';
+import { useFonts } from 'expo-font';
+import {
+  Poppins_300Light,
+  Poppins_400Regular,
+  Poppins_500Medium,
+  Poppins_600SemiBold,
+  Poppins_700Bold,
+  Poppins_800ExtraBold,
+  Poppins_900Black,
+} from '@expo-google-fonts/poppins';
+import {
+  Inter_300Light,
+  Inter_400Regular,
+  Inter_500Medium,
+  Inter_600SemiBold,
+  Inter_700Bold,
+  Inter_800ExtraBold,
+  Inter_900Black,
+} from '@expo-google-fonts/inter';
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
+
+SplashScreen.preventAutoHideAsync();
+
+export default function RootLayout() {
+  const [fontsLoaded] = useFonts({
+    // Poppins fonts
+    Poppins_300Light,
+    Poppins_400Regular,
+    Poppins_500Medium,
+    Poppins_600SemiBold,
+    Poppins_700Bold,
+    Poppins_800ExtraBold,
+    Poppins_900Black,
+    // Inter fonts
+    Inter_300Light,
+    Inter_400Regular,
+    Inter_500Medium,
+    Inter_600SemiBold,
+    Inter_700Bold,
+    Inter_800ExtraBold,
+    Inter_900Black,
+  });
+
+  useEffect(() => {
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
+  return (
+    // Your app content
+  );
+}
+```
+
 Then configure your backend(s) using the CLI:
 
 ```bash
@@ -92,6 +164,7 @@ import {
   SonnyButton,
   SonnyInput,
   SonnyModal,
+  Text,
   showToast,
   SonnyToastProvider,
 } from "sonny-ui";
@@ -112,6 +185,25 @@ export default function App() {
   return (
     <SonnyToastProvider>
       <MainContainer style={styles.container}>
+        <Text
+          fontFamily="poppins"
+          fontSize={24}
+          fontWeight="700"
+          style={styles.title}
+        >
+          Welcome to sonny-ui
+        </Text>
+
+        <Text
+          fontFamily="inter"
+          fontSize={16}
+          fontWeight="400"
+          color="#6B7280"
+          style={styles.subtitle}
+        >
+          Beautiful React Native components with Google Fonts
+        </Text>
+
         <SonnyInput
           placeholder="Enter your name"
           value={name}
@@ -149,6 +241,14 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
   },
+  title: {
+    textAlign: "center",
+    marginBottom: 10,
+  },
+  subtitle: {
+    textAlign: "center",
+    marginBottom: 30,
+  },
   input: {
     marginBottom: 20,
   },
@@ -172,7 +272,7 @@ const styles = StyleSheet.create({
 - **[SonnyCountriesSearch](./docs/SonnyCountriesSearch.md)** - Searchable country dropdown with flags
 - **[SonnyCountryCodePicker](./docs/SonnyCountryCodePicker.md)** - Modal country code picker
 - **[CachedImage](./docs/CachedImage.md)** - High-performance image caching component
-- **[Text](./docs/Text.md)** - Enhanced text component with utility features
+- **[Text](./docs/Text.md)** - Enhanced text component with Google Fonts support (Poppins & Inter)
 
 ### 🏗️ Layout Components
 
