@@ -9,7 +9,8 @@ import {
     Dimensions,
     ViewStyle,
     ColorValue,
-    DimensionValue
+    DimensionValue,
+    PanResponder
 } from 'react-native';
 import { Colors } from '../../constants/colors';
 import { AntDesign } from '@expo/vector-icons';
@@ -37,7 +38,7 @@ export interface SonnySheetModalProps {
     showCloseButton?: boolean;
     /**
      * Custom background gradient colors
-     * @default ['#1a1a1a', '#121212']
+     * @default ['#ffffff', '#f8f9fa']
      */
     gradientColors?: readonly string[];
     /**
@@ -54,23 +55,53 @@ export interface SonnySheetModalProps {
      * Can be a number (pixels) or a percentage string like '50%'
      */
     height?: DimensionValue;
+    /**
+     * Whether to show the drag handle at the top
+     * @default true
+     */
+    showDragHandle?: boolean;
 }
 
 /**
- * A customizable bottom sheet modal component with smooth animations
+ * A customizable bottom sheet modal component with smooth animations and drag gesture
  */
 export const SonnySheetModal: React.FC<SonnySheetModalProps> = ({
     visible,
     onClose,
     children,
     showCloseButton = true,
-    gradientColors = ['#1a1a1a', '#121212'],
+    gradientColors = ['#ffffff', '#f8f9fa'],
     contentContainerStyle,
     minHeight = 300,
     height,
+    showDragHandle = true,
 }) => {
     const translateY = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
     const opacity = useRef(new Animated.Value(0)).current;
+
+    const panResponder = useRef(
+        PanResponder.create({
+            onStartShouldSetPanResponder: () => true,
+            onMoveShouldSetPanResponder: () => true,
+            onPanResponderMove: (_, gestureState) => {
+                if (gestureState.dy > 0) {
+                    translateY.setValue(gestureState.dy);
+                }
+            },
+            onPanResponderRelease: (_, gestureState) => {
+                if (gestureState.dy > 100) {
+                    handleClose();
+                } else {
+                    // Snap back to initial position
+                    Animated.spring(translateY, {
+                        toValue: 0,
+                        useNativeDriver: true,
+                        bounciness: 4,
+                    }).start();
+                }
+            },
+        })
+    ).current;
 
     useEffect(() => {
         if (visible) {
@@ -78,10 +109,10 @@ export const SonnySheetModal: React.FC<SonnySheetModalProps> = ({
             opacity.setValue(0);
 
             Animated.parallel([
-                Animated.timing(translateY, {
+                Animated.spring(translateY, {
                     toValue: 0,
-                    duration: 300,
                     useNativeDriver: true,
+                    bounciness: 8,
                 }),
                 Animated.timing(opacity, {
                     toValue: 1,
@@ -114,7 +145,6 @@ export const SonnySheetModal: React.FC<SonnySheetModalProps> = ({
         if (height !== undefined) {
             return { height };
         }
-        // Default to minHeight if no height is provided
         return { minHeight };
     };
 
@@ -146,14 +176,18 @@ export const SonnySheetModal: React.FC<SonnySheetModalProps> = ({
                                 getHeightStyle(),
                                 contentContainerStyle
                             ]}
+                            {...panResponder.panHandlers}
                         >
+                            {showDragHandle && (
+                                <View style={styles.dragHandle} />
+                            )}
                             {showCloseButton && (
                                 <View style={styles.modalHeader}>
                                     <TouchableOpacity
                                         style={styles.closeButton}
                                         onPress={handleClose}
                                     >
-                                        <AntDesign name="close" size={20} color={Colors.white} />
+                                        <AntDesign name="close" size={20} color={Colors.black} />
                                     </TouchableOpacity>
                                 </View>
                             )}
@@ -175,7 +209,7 @@ const styles = StyleSheet.create({
     },
     overlay: {
         flex: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
         justifyContent: 'flex-end',
     },
     overlayTouchable: {
@@ -193,17 +227,26 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 24,
         borderTopRightRadius: 24,
         paddingBottom: Platform.OS === 'ios' ? 40 : 30,
+        backgroundColor: Colors.white,
         ...Platform.select({
             ios: {
                 shadowColor: Colors.black,
                 shadowOffset: { width: 0, height: -2 },
-                shadowOpacity: 0.25,
+                shadowOpacity: 0.15,
                 shadowRadius: 4,
             },
             android: {
                 elevation: 5,
             },
         }),
+    },
+    dragHandle: {
+        width: 40,
+        height: 4,
+        backgroundColor: 'rgba(0, 0, 0, 0.2)',
+        borderRadius: 2,
+        alignSelf: 'center',
+        marginTop: 12,
     },
     modalHeader: {
         alignItems: 'flex-end',
@@ -213,7 +256,7 @@ const styles = StyleSheet.create({
         width: 32,
         height: 32,
         borderRadius: 16,
-        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        backgroundColor: 'rgba(0, 0, 0, 0.05)',
         alignItems: 'center',
         justifyContent: 'center',
     },

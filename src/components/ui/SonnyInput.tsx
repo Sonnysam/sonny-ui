@@ -286,6 +286,7 @@ const styles = StyleSheet.create({
     inputContainer: {
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'space-between',
         borderWidth: 1,
         paddingHorizontal: 12,
     },
@@ -296,9 +297,9 @@ const styles = StyleSheet.create({
         flex: 1,
         fontSize: 16,
         paddingVertical: 12,
+        marginRight: 12,
     },
     rightIconContainer: {
-        marginLeft: 12,
         padding: 4,
     },
     errorText: {

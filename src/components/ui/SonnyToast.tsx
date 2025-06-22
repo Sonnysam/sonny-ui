@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Animated, Dimensions, Platform } from 'react-native';
 import { Colors } from '../../constants/colors';
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -44,6 +45,7 @@ const Toast: React.FC<ToastProps> = ({
 }) => {
     const [fadeAnim] = useState(new Animated.Value(0));
     const [slideAnim] = useState(new Animated.Value(position === 'top' ? -100 : 100));
+    const insets = useSafeAreaInsets();
 
     useEffect(() => {
         if (visible) {
@@ -134,7 +136,9 @@ const Toast: React.FC<ToastProps> = ({
                     transform: [{ translateY: slideAnim }],
                     backgroundColor: finalBackgroundColor,
                     borderColor: config.borderColor,
-                    [position]: Platform.OS === 'ios' ? (position === 'top' ? 60 : 100) : (position === 'top' ? 40 : 80),
+                    [position]: position === 'top'
+                        ? insets.top + 10
+                        : insets.bottom + 10,
                 }
             ]}
         >

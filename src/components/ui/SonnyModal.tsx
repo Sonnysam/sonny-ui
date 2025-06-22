@@ -57,7 +57,7 @@ export const SonnyModal: React.FC<SonnyModalProps> = ({
     onClose,
     children,
     showCloseButton = true,
-    gradientColors = ['#1a1a1a', '#121212'],
+    gradientColors = ['#ffffff', '#f8f9fa'],
     contentContainerStyle,
     widthPercentage = 90,
 }) => {
@@ -90,7 +90,7 @@ export const SonnyModal: React.FC<SonnyModalProps> = ({
                                         style={styles.closeButton}
                                         onPress={onClose}
                                     >
-                                        <AntDesign name="close" size={20} color={Colors.white} />
+                                        <AntDesign name="close" size={20} color={Colors.black} />
                                     </TouchableOpacity>
                                 </View>
                             )}
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         ...Platform.select({
             ios: {
-                shadowColor: Colors.black,
+                shadowColor: Colors.white,
                 shadowOffset: { width: 0, height: 2 },
                 shadowOpacity: 0.25,
                 shadowRadius: 4,
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
         width: 32,
         height: 32,
         borderRadius: 16,
-        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        backgroundColor: 'rgba(0, 0, 0, 0.05)',
         alignItems: 'center',
         justifyContent: 'center',
     },
