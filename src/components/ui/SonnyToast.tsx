@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Animated, Dimensions, Platform } from 'react-native';
 import { Colors } from '../../constants/colors';
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
-import { useSafeAreaInsets, SafeAreaProvider, useSafeAreaFrame } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { nanoid } from 'nanoid';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -141,10 +141,6 @@ const Toast: React.FC<ToastConfig> = ({
 export const SonnyToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [toasts, setToasts] = useState<ToastItem[]>([]);
     const insets = useSafeAreaInsets();
-    const frame = useSafeAreaFrame();
-
-    // If we have valid insets and frame, we're already inside a SafeAreaProvider
-    const isInsideSafeAreaProvider = insets.top !== 0 || frame.height !== 0;
 
     useEffect(() => {
         // Subscribe to toast events
@@ -161,7 +157,7 @@ export const SonnyToastProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         setToasts((currentToasts) => currentToasts.filter(toast => toast.id !== id));
     };
 
-    const renderContent = () => (
+    return (
         <>
             {children}
             <View style={[styles.toastContainer, { top: insets.top }]}>
@@ -174,15 +170,6 @@ export const SonnyToastProvider: React.FC<{ children: React.ReactNode }> = ({ ch
                 ))}
             </View>
         </>
-    );
-
-    // Only wrap in SafeAreaProvider if we're not already inside one
-    return isInsideSafeAreaProvider ? (
-        renderContent()
-    ) : (
-        <SafeAreaProvider>
-            {renderContent()}
-        </SafeAreaProvider>
     );
 };
 
