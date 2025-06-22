@@ -2,36 +2,44 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Animated, Dimensions, Platform } from 'react-native';
 import { Colors } from '../../constants/colors';
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useSafeAreaInsets, SafeAreaProvider, useSafeAreaFrame } from 'react-native-safe-area-context';
+import { nanoid } from 'nanoid';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 export interface ToastConfig {
-    /** The main message to display */
-    message: string;
-    /** Optional title for the toast */
+    type?: 'success' | 'error' | 'info' | 'warning';
     title?: string;
-    /** Type of toast which determines color and icon */
-    type?: 'success' | 'error' | 'warning' | 'info';
-    /** Duration in milliseconds */
+    message: string;
     duration?: number;
-    /** Position of the toast */
     position?: 'top' | 'bottom';
-    /** Custom icon name from AntDesign or MaterialIcons */
-    icon?: string;
-    /** Custom background color */
+    icon?: React.ReactNode;
     backgroundColor?: string;
-    /** Custom text color */
     textColor?: string;
-    /** Callback when toast is hidden */
     onHide?: () => void;
 }
 
-interface ToastProps extends ToastConfig {
-    visible: boolean;
+interface ToastItem extends ToastConfig {
+    id: string;
 }
 
-const Toast: React.FC<ToastProps> = ({
+// Event system for showing toasts
+let toastSubscribers: ((config: ToastConfig) => void)[] = [];
+
+export const showToast = (config: ToastConfig) => {
+    toastSubscribers.forEach(subscriber => subscriber(config));
+};
+
+const addToastListener = (callback: (config: ToastConfig) => void) => {
+    toastSubscribers.push(callback);
+    return {
+        remove: () => {
+            toastSubscribers = toastSubscribers.filter(sub => sub !== callback);
+        }
+    };
+};
+
+const Toast: React.FC<ToastConfig> = ({
     message,
     title,
     type = 'info',
@@ -40,92 +48,75 @@ const Toast: React.FC<ToastProps> = ({
     icon,
     backgroundColor,
     textColor,
-    onHide,
-    visible
+    onHide
 }) => {
     const [fadeAnim] = useState(new Animated.Value(0));
     const [slideAnim] = useState(new Animated.Value(position === 'top' ? -100 : 100));
     const insets = useSafeAreaInsets();
 
     useEffect(() => {
-        if (visible) {
-            Animated.parallel([
-                Animated.timing(fadeAnim, {
-                    toValue: 1,
-                    duration: 300,
-                    useNativeDriver: true,
-                }),
-                Animated.timing(slideAnim, {
-                    toValue: 0,
-                    duration: 300,
-                    useNativeDriver: true,
-                }),
-            ]).start();
-
-            const timer = setTimeout(() => {
-                hideToast();
-            }, duration);
-
-            return () => clearTimeout(timer);
-        }
-    }, [visible, duration]);
-
-    const hideToast = () => {
+        // Show animation
         Animated.parallel([
             Animated.timing(fadeAnim, {
-                toValue: 0,
+                toValue: 1,
                 duration: 300,
                 useNativeDriver: true,
             }),
             Animated.timing(slideAnim, {
-                toValue: position === 'top' ? -100 : 100,
+                toValue: 0,
                 duration: 300,
                 useNativeDriver: true,
             }),
-        ]).start(() => {
-            if (onHide) onHide();
-        });
-    };
+        ]).start();
 
-    const getTypeConfig = () => {
+        // Hide after duration
+        const timer = setTimeout(() => {
+            Animated.parallel([
+                Animated.timing(fadeAnim, {
+                    toValue: 0,
+                    duration: 300,
+                    useNativeDriver: true,
+                }),
+                Animated.timing(slideAnim, {
+                    toValue: position === 'top' ? -100 : 100,
+                    duration: 300,
+                    useNativeDriver: true,
+                }),
+            ]).start(() => {
+                if (onHide) onHide();
+            });
+        }, duration);
+
+        return () => clearTimeout(timer);
+    }, []);
+
+    const getIcon = () => {
+        if (icon) return icon;
         switch (type) {
             case 'success':
-                return {
-                    borderColor: Colors.success,
-                    iconColor: Colors.success,
-                    icon: icon || 'check-circle',
-                    iconSet: 'AntDesign' as const
-                };
+                return <MaterialIcons name="check-circle" size={24} color={Colors.white} />;
             case 'error':
-                return {
-                    borderColor: Colors.error,
-                    iconColor: Colors.error,
-                    icon: icon || 'close-circle',
-                    iconSet: 'AntDesign' as const
-                };
+                return <MaterialIcons name="error" size={24} color={Colors.white} />;
             case 'warning':
-                return {
-                    borderColor: Colors.warning,
-                    iconColor: Colors.warning,
-                    icon: icon || 'warning',
-                    iconSet: 'AntDesign' as const
-                };
-            case 'info':
+                return <MaterialIcons name="warning" size={24} color={Colors.white} />;
             default:
-                return {
-                    borderColor: Colors.info,
-                    iconColor: Colors.info,
-                    icon: icon || 'info-circle',
-                    iconSet: 'AntDesign' as const
-                };
+                return <AntDesign name="infocirlce" size={24} color={Colors.white} />;
         }
     };
 
-    const config = getTypeConfig();
-    const finalTextColor = textColor || Colors.black;
-    const finalBackgroundColor = backgroundColor || Colors.white;
-
-    if (!visible) return null;
+    const getBackgroundColor = () => {
+        if (backgroundColor) return backgroundColor;
+        switch (type) {
+            case 'success':
+                return Colors.success;
+            case 'error':
+                return Colors.error;
+            case 'warning':
+                return Colors.warning;
+            default:
+                return Colors.info;
+        }
+    };
 
     return (
         <Animated.View
@@ -134,149 +125,108 @@ const Toast: React.FC<ToastProps> = ({
                 {
                     opacity: fadeAnim,
                     transform: [{ translateY: slideAnim }],
-                    backgroundColor: finalBackgroundColor,
-                    borderColor: config.borderColor,
-                    [position]: position === 'top'
-                        ? insets.top + 10
-                        : insets.bottom + 10,
-                }
+                    backgroundColor: getBackgroundColor(),
+                },
             ]}
         >
-            <View style={styles.content}>
-                {config.iconSet === 'AntDesign' ? (
-                    <AntDesign
-                        name={config.icon as any}
-                        size={18}
-                        color={config.iconColor}
-                        style={styles.icon}
-                    />
-                ) : (
-                    <MaterialIcons
-                        name={config.icon as any}
-                        size={18}
-                        color={config.iconColor}
-                        style={styles.icon}
-                    />
-                )}
-                <View style={styles.textContainer}>
-                    {title && (
-                        <Text style={[styles.title, { color: finalTextColor }]}>
-                            {title}
-                        </Text>
-                    )}
-                    <Text style={[styles.message, { color: finalTextColor }]}>
-                        {message}
-                    </Text>
-                </View>
+            <View style={styles.iconContainer}>{getIcon()}</View>
+            <View style={styles.textContainer}>
+                {title && <Text style={[styles.title, textColor ? { color: textColor } : null]}>{title}</Text>}
+                <Text style={[styles.message, textColor ? { color: textColor } : null]}>{message}</Text>
             </View>
         </Animated.View>
     );
 };
 
-// Toast manager
-class ToastManager {
-    private static instance: ToastManager;
-    private toastComponent: React.ComponentType<any> | null = null;
-    private showToastCallback: ((config: ToastConfig) => void) | null = null;
-
-    static getInstance(): ToastManager {
-        if (!ToastManager.instance) {
-            ToastManager.instance = new ToastManager();
-        }
-        return ToastManager.instance;
-    }
-
-    setShowToastCallback(callback: (config: ToastConfig) => void) {
-        this.showToastCallback = callback;
-    }
-
-    show(config: ToastConfig) {
-        if (this.showToastCallback) {
-            this.showToastCallback(config);
-        }
-    }
-}
-
-const toastManager = ToastManager.getInstance();
-
-/**
- * Show a toast notification
- * @param config Toast configuration
- */
-export const showToast = (config: ToastConfig) => {
-    toastManager.show(config);
-};
-
-/**
- * Toast Provider Component - Add this to your app root or screen
- */
 export const SonnyToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [toastConfig, setToastConfig] = useState<ToastConfig | null>(null);
-    const [visible, setVisible] = useState(false);
+    const [toasts, setToasts] = useState<ToastItem[]>([]);
+    const insets = useSafeAreaInsets();
+    const frame = useSafeAreaFrame();
+
+    // If we have valid insets and frame, we're already inside a SafeAreaProvider
+    const isInsideSafeAreaProvider = insets.top !== 0 || frame.height !== 0;
 
     useEffect(() => {
-        toastManager.setShowToastCallback((config: ToastConfig) => {
-            setToastConfig(config);
-            setVisible(true);
+        // Subscribe to toast events
+        const showSubscription = addToastListener((toast) => {
+            setToasts((currentToasts) => [...currentToasts, { ...toast, id: nanoid() }]);
         });
+
+        return () => {
+            showSubscription.remove();
+        };
     }, []);
 
-    const handleHide = () => {
-        setVisible(false);
-        if (toastConfig?.onHide) {
-            toastConfig.onHide();
-        }
+    const handleHide = (id: string) => {
+        setToasts((currentToasts) => currentToasts.filter(toast => toast.id !== id));
     };
 
-    return (
+    const renderContent = () => (
         <>
             {children}
-            {toastConfig && (
-                <Toast
-                    {...toastConfig}
-                    visible={visible}
-                    onHide={handleHide}
-                />
-            )}
+            <View style={[styles.toastContainer, { top: insets.top }]}>
+                {toasts.map((toast) => (
+                    <Toast
+                        key={toast.id}
+                        {...toast}
+                        onHide={() => handleHide(toast.id)}
+                    />
+                ))}
+            </View>
         </>
+    );
+
+    // Only wrap in SafeAreaProvider if we're not already inside one
+    return isInsideSafeAreaProvider ? (
+        renderContent()
+    ) : (
+        <SafeAreaProvider>
+            {renderContent()}
+        </SafeAreaProvider>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        position: 'absolute',
-        left: 16,
-        right: 16,
-        borderRadius: 8,
-        borderWidth: 1,
-        zIndex: 9999,
-        shadowColor: Colors.black,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-        elevation: 4,
-    },
-    content: {
         flexDirection: 'row',
-        alignItems: 'flex-start',
-        padding: 14,
+        alignItems: 'center',
+        marginHorizontal: 16,
+        marginVertical: 8,
+        padding: 16,
+        borderRadius: 12,
+        ...Platform.select({
+            ios: {
+                shadowColor: Colors.black,
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.25,
+                shadowRadius: 4,
+            },
+            android: {
+                elevation: 5,
+            },
+        }),
     },
-    icon: {
-        marginRight: 10,
-        marginTop: 1,
+    iconContainer: {
+        marginRight: 12,
     },
     textContainer: {
         flex: 1,
     },
     title: {
-        fontSize: 14,
+        color: Colors.white,
+        fontSize: 16,
         fontWeight: '600',
-        marginBottom: 2,
-        lineHeight: 18,
+        marginBottom: 4,
     },
     message: {
+        color: Colors.white,
         fontSize: 14,
-        fontWeight: '400',
         lineHeight: 18,
+    },
+    toastContainer: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        zIndex: 9999,
     },
 }); 
