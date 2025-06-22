@@ -1,6 +1,6 @@
-import { Platform, ScrollView, Text, StyleSheet, ViewStyle } from "react-native";
+import { Platform, ScrollView, Text, StyleSheet, ViewStyle, View } from "react-native";
 import React, { ReactNode } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { Colors } from "../constants/colors";
 
 export interface MainContainerProps {
@@ -14,6 +14,8 @@ export interface MainContainerProps {
     disableScroll?: boolean;
     /** Whether to show vertical scroll indicator. Defaults to false */
     showScrollIndicator?: boolean;
+    /** Whether to use View instead of SafeAreaView. Useful when inside another SafeAreaView. */
+    useRegularView?: boolean;
 }
 
 /**
@@ -26,7 +28,10 @@ export const MainContainer: React.FC<MainContainerProps> = ({
     contentContainerStyle,
     disableScroll = false,
     showScrollIndicator = false,
+    useRegularView = false,
 }) => {
+    const insets = useSafeAreaInsets();
+
     // Helper function to safely render children
     const renderSafeChildren = (children: ReactNode) => {
         if (typeof children === 'string') {
@@ -37,9 +42,16 @@ export const MainContainer: React.FC<MainContainerProps> = ({
     };
 
     const content = renderSafeChildren(children);
+    const Container = useRegularView ? View : SafeAreaView;
 
     return (
-        <SafeAreaView style={[styles.container, style]}>
+        <Container
+            style={[
+                styles.container,
+                useRegularView && { paddingTop: insets.top },
+                style
+            ]}
+        >
             {disableScroll ? (
                 content
             ) : (
@@ -51,7 +63,7 @@ export const MainContainer: React.FC<MainContainerProps> = ({
                     {content}
                 </ScrollView>
             )}
-        </SafeAreaView>
+        </Container>
     );
 };
 
