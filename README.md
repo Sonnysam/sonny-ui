@@ -47,10 +47,18 @@ npx expo install sonny-ui
 
 **Important**: Backend setup is done using the CLI tool after installation, not during `npm install`.
 
+## Installation
+
 First install the library:
 
 ```bash
 npm install sonny-ui
+```
+
+**Note**: sonny-ui requires `react-native-safe-area-context` as a peer dependency. If you're using Expo SDK 50+, this is usually already included. If not, install it separately:
+
+```bash
+npm install react-native-safe-area-context
 ```
 
 Then configure your backend(s) using the CLI:

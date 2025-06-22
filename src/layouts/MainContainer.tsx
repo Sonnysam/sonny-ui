@@ -30,7 +30,20 @@ export const MainContainer: React.FC<MainContainerProps> = ({
     showScrollIndicator = false,
     useRegularView = false,
 }) => {
-    const insets = useSafeAreaInsets();
+    // Safe way to get insets with fallback
+    let insets = { top: 0, bottom: 0, left: 0, right: 0 };
+    try {
+        insets = useSafeAreaInsets();
+    } catch (error) {
+        console.warn('MainContainer: Safe area context not available, using fallback values');
+        // Use platform-specific fallbacks
+        insets = {
+            top: Platform.OS === 'ios' ? 44 : 24,
+            bottom: Platform.OS === 'ios' ? 34 : 0,
+            left: 0,
+            right: 0
+        };
+    }
 
     // Helper function to safely render children
     const renderSafeChildren = (children: ReactNode) => {

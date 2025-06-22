@@ -1,6 +1,6 @@
 {
   "name": "sonny-ui",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "A collection of reusable React Native components optimized for Expo",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -47,14 +47,14 @@
   "peerDependencies": {
     "expo": ">=50.0.0",
     "react": ">=18.0.0",
-    "react-native": ">=0.73.0"
+    "react-native": ">=0.73.0",
+    "react-native-safe-area-context": ">=4.0.0"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.4",
     "expo-file-system": "^18.1.10",
     "expo-linear-gradient": "^13.0.2",
-    "nanoid": "^5.0.0",
-    "react-native-safe-area-context": "^5.4.1"
+    "nanoid": "^5.0.0"
   },
   "devDependencies": {
     "@types/react": "^19.0.0",
@@ -66,7 +66,8 @@
     "react-native": "^0.79.3",
     "typescript": "^5.8.3",
     "expo": "^53.0.0",
-    "@testing-library/react-native": "^12.0.0"
+    "@testing-library/react-native": "^12.0.0",
+    "react-native-safe-area-context": "^5.4.1"
   },
   "overrides": {
     "@types/react": "^19.0.0"

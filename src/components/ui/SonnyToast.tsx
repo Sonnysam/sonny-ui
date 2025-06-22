@@ -52,7 +52,6 @@ const Toast: React.FC<ToastConfig> = ({
 }) => {
     const [fadeAnim] = useState(new Animated.Value(0));
     const [slideAnim] = useState(new Animated.Value(position === 'top' ? -100 : 100));
-    const insets = useSafeAreaInsets();
 
     useEffect(() => {
         // Show animation
@@ -140,7 +139,21 @@ const Toast: React.FC<ToastConfig> = ({
 
 export const SonnyToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [toasts, setToasts] = useState<ToastItem[]>([]);
-    const insets = useSafeAreaInsets();
+
+    // Safe way to get insets with fallback
+    let insets = { top: 0, bottom: 0, left: 0, right: 0 };
+    try {
+        insets = useSafeAreaInsets();
+    } catch (error) {
+        console.warn('SonnyToast: Safe area context not available, using fallback values');
+        // Use platform-specific fallbacks
+        insets = {
+            top: Platform.OS === 'ios' ? 44 : 24,
+            bottom: Platform.OS === 'ios' ? 34 : 0,
+            left: 0,
+            right: 0
+        };
+    }
 
     useEffect(() => {
         // Subscribe to toast events
@@ -160,7 +173,7 @@ export const SonnyToastProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     return (
         <>
             {children}
-            <View style={[styles.toastContainer, { top: insets.top }]}>
+            <View style={[styles.toastContainer, { top: insets.top + 10 }]}>
                 {toasts.map((toast) => (
                     <Toast
                         key={toast.id}
