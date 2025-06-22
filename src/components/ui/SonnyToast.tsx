@@ -3,9 +3,13 @@ import { View, Text, StyleSheet, Animated, Dimensions, Platform } from 'react-na
 import { Colors } from '../../constants/colors';
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { nanoid } from 'nanoid';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
+
+// Simple ID generator for React Native
+const generateId = () => {
+    return Date.now().toString(36) + Math.random().toString(36).substr(2);
+};
 
 export interface ToastConfig {
     type?: 'success' | 'error' | 'info' | 'warning';
@@ -158,7 +162,7 @@ export const SonnyToastProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     useEffect(() => {
         // Subscribe to toast events
         const showSubscription = addToastListener((toast) => {
-            setToasts((currentToasts) => [...currentToasts, { ...toast, id: nanoid() }]);
+            setToasts((currentToasts) => [...currentToasts, { ...toast, id: generateId() }]);
         });
 
         return () => {
